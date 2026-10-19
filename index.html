@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b7285">
+  <meta name="description" content="AWPL Outward Number Generator">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <title>AWPL Outward</title>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <div class="brand">AWPL</div>
+      <h1>Outward Number</h1>
+      <p class="sub">Enter the outward details and get the official reference number.</p>
+
+      <label for="date">Date</label>
+      <input id="date" type="date" required>
+
+      <label for="officerOffice">Name and Address (Officer / Office)</label>
+      <textarea id="officerOffice" rows="3" placeholder="e.g. Executive Engineer, Maharashtra Jeevan Pradhikaran, Pune" required></textarea>
+
+      <label for="place">Place</label>
+      <input id="place" type="text" placeholder="e.g. Pune" required>
+
+      <label for="description">Description</label>
+      <textarea id="description" rows="3" placeholder="e.g. Submission of proposal" required></textarea>
+
+      <label for="submittedBy">Submitted By</label>
+      <select id="submittedBy" required>
+        <option value="">Select employee</option>
+        <option value="Dr. Anujkumar Ghorpade">Dr. Anujkumar Ghorpade</option>
+        <option value="Yogesh Ghatge">Yogesh Ghatge</option>
+        <option value="Shivendra Singh">Shivendra Singh</option>
+        <option value="Umesh Mane">Umesh Mane</option>
+        <option value="Avinash Ghodke">Avinash Ghodke</option>
+        <option value="Sanyojak Kamble">Sanyojak Kamble</option>
+        <option value="Omprakash Ade">Omprakash Ade</option>
+      </select>
+
+      <label for="remarks">Remarks</label>
+      <textarea id="remarks" rows="2" placeholder="Optional"></textarea>
+
+      <button id="getBtn" type="button">GET OUTWARD NUMBER</button>
+
+      <div id="result" class="result hidden">
+        <div class="small">Your outward number</div>
+        <div id="outwardNo" class="number"></div>
+        <button id="copyBtn" class="secondary" type="button">COPY NUMBER</button>
+        <div id="status" class="status"></div>
+      </div>
+      <div id="error" class="error hidden" role="alert"></div>
+    </section>
+    <footer>AWPL Outward Register</footer>
+  </main>
+
+<script>
+/*
+ * ADMIN SETUP:
+ * Replace the placeholder below with your deployed Apps Script Web App URL
+ * ending in /exec. Do not use the editor URL.
+ */
+const API_URL = "https://script.google.com/macros/s/AKfycbzAheHoten1kfgSEFLRLXXIoh_Wmijk9hOCle0O4ckZjfDeT6xOTRP9XFYdPLnZHIFf/exec";
+
+const $ = id => document.getElementById(id);
+
+function setToday() {
+  const d = new Date();
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  $("date").value = local.toISOString().slice(0, 10);
+}
+
+function showError(message) {
+  $("error").textContent = message;
+  $("error").classList.remove("hidden");
+  $("result").classList.add("hidden");
+}
+
+function clearError() {
+  $("error").classList.add("hidden");
+}
+
+setToday();
+
+$("getBtn").addEventListener("click", async () => {
+  clearError();
+
+  const date = $("date").value;
+  const officerOffice = $("officerOffice").value.trim();
+  const place = $("place").value.trim();
+  const description = $("description").value.trim();
+  const submittedBy = $("submittedBy").value;
+  const remarks = $("remarks").value.trim();
+
+  if (!date) return showError("Please select the date.");
+  if (!officerOffice) return showError("Please enter the officer / office name and address.");
+  if (!place) return showError("Please enter the place.");
+  if (!description) return showError("Please enter the description.");
+  if (!submittedBy) return showError("Please select who is submitting the document.");
+  if (API_URL.includes("PASTE_YOUR")) {
+    return showError("Administrator has not connected the outward system yet.");
+  }
+
+  $("getBtn").disabled = true;
+  $("getBtn").textContent = "GENERATING...";
+
+  try {
+    const requestId = crypto.randomUUID();
+    const params = new URLSearchParams({
+      action: "issue", date, officerOffice, place, description,
+      submittedBy, remarks, requestId
+    });
+
+    const response = await fetch(API_URL + "?" + params.toString(), {
+      method: "GET",
+      cache: "no-store"
+    });
+
+    if (!response.ok) throw new Error("Server returned " + response.status);
+
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.error || "Could not generate the outward number.");
+
+    $("outwardNo").textContent = data.outwardNo;
+    $("status").textContent = "Issued just now";
+    $("result").classList.remove("hidden");
+    $("getBtn").textContent = "NUMBER GENERATED";
+  } catch (error) {
+    showError("Could not generate the number. Check the backend connection before retrying. If the request may have reached the server, check the Sheet before trying again.");
+    $("getBtn").disabled = false;
+    $("getBtn").textContent = "GET OUTWARD NUMBER";
+  }
+});
+
+$("copyBtn").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText($("outwardNo").textContent);
+    $("status").textContent = "Copied to clipboard.";
+  } catch {
+    $("status").textContent = "Please copy the number manually.";
+  }
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

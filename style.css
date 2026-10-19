@@ -1,0 +1,94 @@
+* { box-sizing: border-box; }
+:root {
+  color-scheme: light;
+  --teal: #0b7285;
+  --teal-dark: #075866;
+  --ink: #173042;
+  --muted: #617584;
+  --line: #d8e2e8;
+  --bg: #f2f7f9;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.app {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 22px 14px 16px;
+}
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 28px rgba(23, 48, 66, .07);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--teal);
+  color: white;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+h1 { margin: 16px 0 6px; font-size: clamp(1.6rem, 5vw, 2rem); }
+.sub { margin: 0 0 22px; color: var(--muted); line-height: 1.5; }
+label { display: block; margin: 16px 0 7px; font-size: .94rem; font-weight: 700; }
+input, textarea, select {
+  display: block;
+  width: 100%;
+  border: 1px solid #c8d6df;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  padding: 12px 13px;
+  outline: none;
+}
+textarea { resize: vertical; min-height: 48px; }
+input:focus, textarea:focus, select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(11, 114, 133, .12);
+}
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 11px;
+  background: var(--teal);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  padding: 15px 16px;
+  margin-top: 22px;
+  cursor: pointer;
+}
+button:hover { background: var(--teal-dark); }
+button:disabled { opacity: .65; cursor: wait; }
+.result {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #b7d9df;
+  background: #f0fafb;
+  border-radius: 12px;
+  text-align: center;
+}
+.small { color: var(--muted); font-size: .9rem; }
+.number { margin-top: 7px; font-size: clamp(1.45rem, 6vw, 2rem); font-weight: 850; overflow-wrap: anywhere; }
+button.secondary { margin-top: 14px; background: #fff; color: var(--teal-dark); border: 1px solid #9bc6ce; }
+.status { margin-top: 10px; color: var(--muted); font-size: .88rem; }
+.error { margin-top: 16px; padding: 12px; border-radius: 10px; background: #fff0ef; color: #9b2420; line-height: 1.45; }
+.hidden { display: none; }
+footer { padding: 16px 8px 0; text-align: center; color: var(--muted); font-size: .85rem; }
+@media (max-width: 420px) {
+  .app { padding: 12px 10px; }
+  .card { padding: 18px; border-radius: 14px; }
+}

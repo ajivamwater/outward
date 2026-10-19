@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0b7285"/>
+  <path d="M132 112h248v48H132zM132 190h248v30H132zM132 248h180v30H132z" fill="#b8edf1"/>
+  <text x="256" y="386" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="94" font-weight="800" fill="#fff">AWPL</text>
+</svg>
